@@ -1,5 +1,6 @@
 package com.example.artizen.entity;
 
+import com.example.artizen.dto.response.ArtizenResponseDto;
 import com.example.artizen.util.TimeStamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,7 @@ import java.util.List;
 public class Artizen extends TimeStamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -25,13 +25,13 @@ public class Artizen extends TimeStamped {
     @Column(nullable = false)
     private String posterUrl;
 
-    @Column(nullable = false)
+    @Column
     private String price;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    @Column(nullable = false)
+    @Column
     private String staff;
 
     @Column(nullable = false)
@@ -47,16 +47,39 @@ public class Artizen extends TimeStamped {
 
     private String location;
 
-    @OneToMany(mappedBy = "artizen",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Image> imageList;
 
-    @OneToMany(mappedBy = "artizen",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Time> timeList;
 
-    @OneToMany(mappedBy = "artizen",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Heart> heartList;
 
-    @OneToMany(mappedBy = "artizen",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 
+
+    public Artizen(ArtizenResponseDto artizenResponseDto) {
+        this.id = artizenResponseDto.getId();
+        this.name = artizenResponseDto.getName();
+        this.place = artizenResponseDto.getFacility();
+        this.posterUrl = artizenResponseDto.getPosterUrl();
+        this.date = artizenResponseDto.getStartDate() + " ~ " + artizenResponseDto.getEndDate();
+        this.category = artizenResponseDto.getGenre();
+        this.status = artizenResponseDto.getState();
+    }
+
+    public void update(ArtizenResponseDto artizenResponseDto) {
+        this.id = artizenResponseDto.getId();
+        this.name = artizenResponseDto.getName();
+        this.place = artizenResponseDto.getFacility();
+        this.posterUrl = artizenResponseDto.getPosterUrl();
+        this.price = artizenResponseDto.getPrice();
+        this.content = artizenResponseDto.getContent();
+        this.staff = artizenResponseDto.getStaff();
+        this.date = artizenResponseDto.getStartDate() + " ~ " + artizenResponseDto.getEndDate();
+        this.category = artizenResponseDto.getGenre();
+        this.status = artizenResponseDto.getState();
+    }
 }
