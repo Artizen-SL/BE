@@ -8,6 +8,9 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,21 +117,6 @@ public class ArtizenService {
 
             Artizen artizen = artizenRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공연입니다."));
             artizen.update(artizenResponseDto);
-//                show.put("showId", showId);
-//                show.put("name", name);
-//                show.put("startDate", startDate);
-//                show.put("endDate", endDate);
-//                show.put("facility", facility);
-//                show.put("staff", staff);
-//                show.put("runTime", runTime);
-//                show.put("ageRange", ageRange);
-//                show.put("price", price);
-//                show.put("content", content);
-//                show.put("posterUrl", posterUrl);
-//                show.put("genre", genre);
-//                show.put("state", state);
-//                show.put("performanceTime", performanceTime);
-//                show.put("openrun", openrun);
 
 
         } catch (Exception e) {
@@ -166,6 +154,27 @@ public class ArtizenService {
     }
 
 
+    @Transactional
+    public ResponseEntity<?> searchArtizen(String keyword, int page, int size){
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Artizen> artizenList1 = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
+        Page<Artizen> aritzenList2 = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword,pageable);
+        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
+        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
+
+        List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+        addElements(artizenList1, artizenResponseDtoList);
+        addElements(aritzenList2, artizenResponseDtoList);
+        addElements(artizenList3, artizenResponseDtoList);
+        addElements(artizenList4, artizenResponseDtoList);
+
+        return ResponseEntity.ok(artizenResponseDtoList);
+    }
+
+
     public String convertState(int state) {
         if (state == 1) {
             return "01";
@@ -180,6 +189,12 @@ public class ArtizenService {
         if (!artizenRepository.existsById(artizenResponseDto.getId())) {
             Artizen artizen = new Artizen(artizenResponseDto);
             artizenRepository.save(artizen);
+        }
+    }
+
+    public void addElements(Page<Artizen> pageList, List<ArtizenResponseDto> list){
+        for (Artizen artizen : pageList){
+            list.add(new ArtizenResponseDto(artizen));
         }
     }
 
