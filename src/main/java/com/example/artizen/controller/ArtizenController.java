@@ -24,6 +24,15 @@ public class ArtizenController {
     }
 
 
+    @GetMapping(value = "/search/artizens")
+    public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
+                                           @RequestParam int page,
+                                           @RequestParam int size){
+
+        return artizenService.searchArtizen(keyword, page, size);
+    }
+
+
     @GetMapping(value = "/artizens")
     public ResponseEntity<?> getArtizenList(@RequestParam String genre) {
 

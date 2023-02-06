@@ -51,10 +51,13 @@ public class ArtizenResponseDto {
     public ArtizenResponseDto(Artizen artizen) {
         this.id = artizen.getId();
         this.name = artizen.getName();
-//        this.genre = artizen.getCategory();
-//        this.state = artizen.getStatus();
+        this.genre = artizen.getCategory();
+        this.state = artizen.getStatus();
         this.Date = artizen.getDate();
         this.posterUrl = artizen.getPosterUrl();
         this.facility = artizen.getPlace();
+        this.price = artizen.getPrice();
+        this.content = artizen.getContent();
+        this.staff = artizen.getStaff();
     }
 }
