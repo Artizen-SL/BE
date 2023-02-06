@@ -13,17 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArtizenController {
     private final ArtizenService artizenService;
 
-    @GetMapping(value = "/search/shows")
-    public ResponseEntity<?> searchShow(@RequestParam int startDate,
+    // kopis 에서 받아오는 경로
+    @GetMapping(value = "/search/kopis")
+    public ResponseEntity<?> searchKopis(@RequestParam int startDate,
                                         @RequestParam int endDate,
                                         @RequestParam int page,
                                         @RequestParam int rows,
                                         @RequestParam int prfState) {
 
-        return artizenService.searchShow(startDate, endDate, page, rows, prfState);
+        return artizenService.searchKopis(startDate, endDate, page, rows, prfState);
     }
 
 
+    // 메인페이지 검색할 Api
     @GetMapping(value = "/search/artizens")
     public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
                                            @RequestParam int page,
@@ -33,6 +35,7 @@ public class ArtizenController {
     }
 
 
+    // 장르별 전체리스트 조회
     @GetMapping(value = "/artizens")
     public ResponseEntity<?> getArtizenList(@RequestParam String genre) {
 
@@ -40,6 +43,7 @@ public class ArtizenController {
     }
 
 
+    // 상세 조회
     @GetMapping(value = "/artizens/{artizen_id}")
     public ResponseEntity<?> getArtizen(@PathVariable(name = "artizen_id") String id) {
 
