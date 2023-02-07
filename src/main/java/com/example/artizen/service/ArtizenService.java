@@ -124,15 +124,48 @@ public class ArtizenService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> getArtizenList(String genre) {
 
-        List<Artizen> artizenList = artizenRepository.findAllByCategoryContains(genre);
-        List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+        if (genre.contains("연극/뮤지컬")) {
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("연극");
+            List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains("뮤지컬");
 
-        for (Artizen artizen : artizenList) {
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
 
-            artizenResponseDtoList.add(new ArtizenResponseDto(artizen));
+            addElements(artizenList1, artizenResponseDtoList);
+            addElements(artizenList2, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+
+        } else if (genre.contains("콘서트")) {
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("대중음악");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+
+        } else if (genre.contains("클래식/무용")) {
+
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("클래식");
+            List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains("무용");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+            addElements(artizenList2, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+
+        } else {
+
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("서커스/마술");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
         }
-
-        return ResponseEntity.ok(artizenResponseDtoList);
     }
 
 
@@ -150,19 +183,24 @@ public class ArtizenService {
 
 
     @Transactional
-    public ResponseEntity<?> searchArtizen(String keyword, int page, int size) {
+    public ResponseEntity<?> searchArtizen(String keyword) {
 
-        Pageable pageable = PageRequest.of(page, size);
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        Page<Artizen> artizenList1 = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
+//        Page<Artizen> artizenList2 = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword, pageable);
+//        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
+//        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
 
-        Page<Artizen> artizenList1 = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
-        Page<Artizen> aritzenList2 = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword, pageable);
-        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
-        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
+        List<Artizen> artizenList1 = artizenRepository.findAllByNameContains(keyword);
+        List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains(keyword);
+        List<Artizen> artizenList3 = artizenRepository.findAllByPlaceContains(keyword);
+        List<Artizen> artizenList4 = artizenRepository.findAllByContentContains(keyword);
 
         List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
 
         addElements(artizenList1, artizenResponseDtoList);
-        addElements(aritzenList2, artizenResponseDtoList);
+        addElements(artizenList2, artizenResponseDtoList);
         addElements(artizenList3, artizenResponseDtoList);
         addElements(artizenList4, artizenResponseDtoList);
 
@@ -189,10 +227,17 @@ public class ArtizenService {
     }
 
 
-    public void addElements(Page<Artizen> pageList, List<ArtizenResponseDto> list) {
-        for (Artizen artizen : pageList) {
-            list.add(new ArtizenResponseDto(artizen));
+    public void addElements(List<Artizen> list, List<ArtizenResponseDto> dtoList) {
+        for (Artizen artizen : list) {
+            dtoList.add(new ArtizenResponseDto(artizen));
         }
     }
+
+
+//    public void addElements(Page<Artizen> pageList, List<ArtizenResponseDto> list) {
+//        for (Artizen artizen : pageList) {
+//            list.add(new ArtizenResponseDto(artizen));
+//        }
+//    }
 
 }

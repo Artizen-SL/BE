@@ -25,13 +25,19 @@ public class ArtizenController {
     }
 
 
-    // 메인페이지 검색할 Api
-    @GetMapping(value = "/search/artizens")
-    public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
-                                           @RequestParam int page,
-                                           @RequestParam int size){
+    // 메인페이지 검색할 Api(무한스크롤)
+//    @GetMapping(value = "/search/artizens")
+//    public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
+//                                           @RequestParam int page,
+//                                           @RequestParam int size){
+//
+//        return artizenService.searchArtizen(keyword, page, size);
+//    }
 
-        return artizenService.searchArtizen(keyword, page, size);
+    @GetMapping(value = "/search/artizens")
+    public ResponseEntity<?> searchArtizen(@RequestParam String keyword){
+
+        return artizenService.searchArtizen(keyword);
     }
 
 
