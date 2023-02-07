@@ -145,11 +145,14 @@ public class MemberService {
                 .get("profile_image").asText();
 
         //연령대 정보
-        Boolean isAgeRange = jsonNode.get("kakao_account")
+        boolean isAgeRange = jsonNode.get("kakao_account")
                 .get("has_age_range").asBoolean();
 
+        boolean ageAgreement = jsonNode.get("kakao_account")
+                .get("age_range_needs_agreement").asBoolean();
+
         String ageRange = "";
-        if (isAgeRange) {
+        if (isAgeRange && !ageAgreement) {
             ageRange = jsonNode.get("kakao_account")
                     .get("age_range").asText();
         } else {
@@ -157,11 +160,14 @@ public class MemberService {
         }
 
         //생일 정보
-        Boolean isBirthday = jsonNode.get("kakao_account")
+        boolean isBirthday = jsonNode.get("kakao_account")
                 .get("has_birthday").asBoolean();
 
+        boolean birthdayAgreement = jsonNode.get("kakao_account")
+                .get("birthday_needs_agreement").asBoolean();
+
         String birthday = "";
-        if (isBirthday) {
+        if (isBirthday && !birthdayAgreement) {
             birthday = jsonNode.get("kakao_account")
                     .get("birthday").asText();
         } else {
@@ -169,11 +175,14 @@ public class MemberService {
         }
 
         //성별 정보
-        Boolean isGender = jsonNode.get("kakao_account")
+        boolean isGender = jsonNode.get("kakao_account")
                 .get("has_gender").asBoolean();
 
+        boolean genderAgreement = jsonNode.get("kakao_account")
+                .get("gender_needs_agreement").asBoolean();
+
         String gender = "";
-        if (isGender) {
+        if (isGender && !genderAgreement) {
             gender = jsonNode.get("kakao_account")
                     .get("gender").asText();
         } else {
