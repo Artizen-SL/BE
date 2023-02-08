@@ -34,6 +34,10 @@ public class MemberDetailsImpl implements UserDetails {
         return member;
     }
 
+    public String getSubId() {
+        return member.getSubId();
+    }
+
     @Override
     public String getPassword() {
         return member.getPassword();

@@ -10,14 +10,16 @@ public class KakaoMemberInfoDto {
     private String gender;
     private String ageRange;
     private String birthday;
+    private String subId;
 
-    public KakaoMemberInfoDto (String id, String nickname, String gender, String ageRange, String birthday, String profileImgUrl) {
+    public KakaoMemberInfoDto (String id, String nickname, String gender, String ageRange, String birthday, String profileImgUrl, String subId) {
         this.id = id;
         this.nickname = nickname;
         this.profileImgUrl = profileImgUrl;
         this.gender = gender;
         this.ageRange = ageRange;
         this.birthday = birthday;
+        this.subId = subId;
     }
 
 }
