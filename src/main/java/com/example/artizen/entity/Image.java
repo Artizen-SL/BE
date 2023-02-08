@@ -22,4 +22,9 @@ public class Image extends TimeStamped {
     @JoinColumn(name = "ARTIZEN_ID")
     private Artizen artizen;
 
+    public Image(String image, Artizen id){
+        this.imageUrl = image;
+        this.artizen = id;
+    }
+
 }
