@@ -18,6 +18,9 @@ public class Member extends TimeStamped {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column(nullable = false)
+    private String subId;
+
     private String profileImgUrl;
 
     @Column(nullable = false)
@@ -41,9 +44,10 @@ public class Member extends TimeStamped {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Heart> heartList;
 
-    public Member(String kakaoId, String nickname, String encodedPassword, MemberRoleEnum role, MemberGenderEnum gender, String ageRange, String profileImgUrl, String birthday) {
+    public Member(String kakaoId, String nickname, String encodedPassword, MemberRoleEnum role, MemberGenderEnum gender, String ageRange, String profileImgUrl, String birthday, String subId) {
         this.id = kakaoId;
         this.nickname = nickname;
+        this.subId = subId;
         this.password = encodedPassword;
         this.authority = role;
         this.gender = gender;

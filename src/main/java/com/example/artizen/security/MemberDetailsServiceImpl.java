@@ -11,10 +11,16 @@ public class MemberDetailsServiceImpl {
 
     private final MemberRepository memberRepository;
 
-    public MemberDetailsImpl loadMemberByMembername(String nickname) {
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new IllegalArgumentException("Can't find" + nickname));
+//    public MemberDetailsImpl loadMemberByMembername(String nickname) {
+//        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+//                () -> new IllegalArgumentException("Can't find" + nickname));
+//
+//        return new MemberDetailsImpl(member);
+//    }
 
+    public MemberDetailsImpl loadMember(String id) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("회원가입이 필요합니다."));
         return new MemberDetailsImpl(member);
     }
 }
