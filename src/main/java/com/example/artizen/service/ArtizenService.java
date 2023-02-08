@@ -2,7 +2,9 @@ package com.example.artizen.service;
 
 import com.example.artizen.dto.response.ArtizenResponseDto;
 import com.example.artizen.entity.Artizen;
+import com.example.artizen.entity.Image;
 import com.example.artizen.repository.ArtizenRepository;
+import com.example.artizen.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.json.XML;
@@ -25,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ArtizenService {
     private final ArtizenRepository artizenRepository;
+    private final ImageRepository imageRepository;
 
     @Value("${secretKey}")
     String key;
@@ -83,8 +86,56 @@ public class ArtizenService {
     }
 
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getArtizenList(String genre) {
+
+        if (genre.contains("연극/뮤지컬")) {
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("연극");
+            List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains("뮤지컬");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+            addElements(artizenList2, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+
+        } else if (genre.contains("콘서트")) {
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("대중음악");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+
+        } else if (genre.contains("클래식/무용")) {
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("클래식");
+            List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains("무용");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+            addElements(artizenList2, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+
+        } else {
+            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("서커스/마술");
+
+            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+
+            addElements(artizenList1, artizenResponseDtoList);
+
+            return ResponseEntity.ok(artizenResponseDtoList);
+        }
+    }
+
+
     @Transactional
-    public void updateDetailOne(String id) {
+    public ResponseEntity<?> getArtizen(String id) {
+
+        Map<String, Object> mapList = new HashMap<>();
 
         try {
 
@@ -109,60 +160,75 @@ public class ArtizenService {
             String genre = obj2.get("genrenm").toString();
             String state = obj2.get("prfstate").toString();
 
+            List<String> imageList = new ArrayList<>();
+
             ArtizenResponseDto artizenResponseDto = new ArtizenResponseDto(showId, name, genre, state, startDate, endDate, posterUrl, facility, price, content, staff);
 
             Artizen artizen = artizenRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공연입니다."));
             artizen.update(artizenResponseDto);
 
+            if (obj2.has("styurls")) {
+
+                if (obj2.getJSONObject("styurls").get("styurl") instanceof JSONArray) {
+                    JSONArray imageArray = obj2.getJSONObject("styurls").getJSONArray("styurl");
+
+                    for (int i = 0; i < imageArray.length(); i++) {
+
+                        String imageUrl = imageArray.get(i).toString();
+
+                        imageList.add(imageUrl);
+                        mapList.put("imageList", imageList);
+
+                        checkExistImage(imageUrl, artizen);
+                    }
+                } else {
+                    String images = obj2.getJSONObject("styurls").get("styurl").toString();
+
+                    imageList.add(images);
+                    mapList.put("imageList", imageList);
+
+                    checkExistImage(images, artizen);
+                }
+            }
+
+            mapList.put("showId", showId);
+            mapList.put("name", name);
+            mapList.put("date", startDate + "~" + endDate);
+            mapList.put("facility", facility);
+            mapList.put("staff", staff);
+            mapList.put("price", price);
+            mapList.put("content", content);
+            mapList.put("posterUrl", posterUrl);
+            mapList.put("genre", genre);
+            mapList.put("state", state);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getArtizenList(String genre) {
-
-        List<Artizen> artizenList = artizenRepository.findAllByCategoryContains(genre);
-        List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
-
-        for (Artizen artizen : artizenList) {
-
-            artizenResponseDtoList.add(new ArtizenResponseDto(artizen));
-        }
-
-        return ResponseEntity.ok(artizenResponseDtoList);
+        return ResponseEntity.ok(mapList);
     }
 
 
     @Transactional
-    public ResponseEntity<?> getArtizen(String id) {
+    public ResponseEntity<?> searchArtizen(String keyword) {
 
-        Artizen artizen = artizenRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 공연이 존재하지 않습니다."));
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        Page<Artizen> artizenList1 = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
+//        Page<Artizen> artizenList2 = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword, pageable);
+//        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
+//        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
 
-        if (artizen.getPrice() == null) {
-            updateDetailOne(id);
-        }
-
-        return ResponseEntity.ok(artizen);
-    }
-
-
-    @Transactional
-    public ResponseEntity<?> searchArtizen(String keyword, int page, int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Artizen> artizenList1 = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
-        Page<Artizen> aritzenList2 = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword, pageable);
-        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
-        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
+        List<Artizen> artizenList1 = artizenRepository.findAllByNameContains(keyword);
+        List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains(keyword);
+        List<Artizen> artizenList3 = artizenRepository.findAllByPlaceContains(keyword);
+        List<Artizen> artizenList4 = artizenRepository.findAllByContentContains(keyword);
 
         List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
 
         addElements(artizenList1, artizenResponseDtoList);
-        addElements(aritzenList2, artizenResponseDtoList);
+        addElements(artizenList2, artizenResponseDtoList);
         addElements(artizenList3, artizenResponseDtoList);
         addElements(artizenList4, artizenResponseDtoList);
 
@@ -189,10 +255,23 @@ public class ArtizenService {
     }
 
 
-    public void addElements(Page<Artizen> pageList, List<ArtizenResponseDto> list) {
-        for (Artizen artizen : pageList) {
-            list.add(new ArtizenResponseDto(artizen));
+    public void addElements(List<Artizen> list, List<ArtizenResponseDto> dtoList) {
+        for (Artizen artizen : list) {
+            dtoList.add(new ArtizenResponseDto(artizen));
         }
     }
+
+    public void checkExistImage(String image, Artizen artizen) {
+        if (!imageRepository.existsByImageUrlAndArtizen(image, artizen)) {
+            imageRepository.save(new Image(image, artizen));
+        }
+    }
+
+
+//    public void addElements(Page<Artizen> pageList, List<ArtizenResponseDto> list) {
+//        for (Artizen artizen : pageList) {
+//            list.add(new ArtizenResponseDto(artizen));
+//        }
+//    }
 
 }

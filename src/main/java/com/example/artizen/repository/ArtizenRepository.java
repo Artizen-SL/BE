@@ -12,14 +12,18 @@ public interface ArtizenRepository extends JpaRepository<Artizen, String> {
 
     List<Artizen> findAllByCategoryContains(String genre);
 
-    Page<Artizen> findAllByNameContainsOrderByCreatedAt(String keyword, Pageable pageable);
-
-    Page<Artizen> findAllByCategoryContainsOrderByCreatedAt(String keyword, Pageable pageable);
-
-    Page<Artizen> findAllByContentContainsOrderByCreatedAt(String keyword, Pageable pageable);
-
-    Page<Artizen> findAllByPlaceContainsOrderByCreatedAt(String keyword, Pageable pageable);
+//    Page<Artizen> findAllByNameContainsOrderByCreatedAt(String keyword, Pageable pageable);
+//
+//    Page<Artizen> findAllByCategoryContainsOrderByCreatedAt(String keyword, Pageable pageable);
+//
+//    Page<Artizen> findAllByContentContainsOrderByCreatedAt(String keyword, Pageable pageable);
+//
+//    Page<Artizen> findAllByPlaceContainsOrderByCreatedAt(String keyword, Pageable pageable);
 
     List<Artizen> findAllByNameContains(String keyword);
+
+    List<Artizen> findAllByPlaceContains(String keyword);
+
+    List<Artizen> findAllByContentContains(String keyword);
 
 }
