@@ -33,9 +33,10 @@ public class Notification extends TimeStamped {
         this.importance = requestDto.getImportance().equals("0") ? false : true;
     }
 
-    public void update(NotificationRequestDto requestDto){
+    public void update(NotificationRequestDto requestDto, S3UploadService s3UploadService, String dir) throws IOException{
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
+        this.imageUrl = s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle());
         this.importance = requestDto.getImportance().equals("0") ? false : true;
     }
 }
