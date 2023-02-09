@@ -49,7 +49,7 @@ public class S3UploadService {
 
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return "https://odok-s3.s3.ap-northeast-2.amazonaws.com/" + fileName;
+        return "https://artizen-image.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
