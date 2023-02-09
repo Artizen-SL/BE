@@ -44,7 +44,7 @@ public class NotificationController {
 
     @PutMapping(value = "/{notification_id}")
     public ResponseEntity<?> updateNotification(@PathVariable(name = "notification_id") Long id,
-                                                @ModelAttribute NotificationRequestDto requestDto){
+                                                @ModelAttribute NotificationRequestDto requestDto) throws IOException{
 
         return notificationService.updateNotification(id, requestDto);
     }

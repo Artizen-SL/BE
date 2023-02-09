@@ -1,7 +1,10 @@
 package com.example.artizen.service;
 
 import com.example.artizen.dto.request.NotificationRequestDto;
+import com.example.artizen.dto.response.MessageDto;
+import com.example.artizen.dto.response.NotificationResponseDto;
 import com.example.artizen.entity.Notification;
+import com.example.artizen.entity.ResponseCode;
 import com.example.artizen.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,14 +33,19 @@ public class NotificationService {
         Notification notification = new Notification(requestDto, s3UploadService, dir);
         notificationRepository.save(notification);
 
-        return new ResponseEntity<>(notification, HttpStatus.OK);
+        return ResponseEntity.status(ResponseCode.POST_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.POST_SUCCESS.getCode(), ResponseCode.POST_SUCCESS.getMsg() ));
     }
 
 
     @Transactional
     public ResponseEntity<?> getTop5() {
 
-        List<Notification> importanceList = notificationRepository.findTop5ByImportanceIsTrueOrderByCreatedAtDesc();
+        List<Notification> notificationList = notificationRepository.findTop5ByImportanceIsTrueOrderByCreatedAtDesc();
+        List<Notification> importanceList = new ArrayList<>();
+
+        for (Notification notification : notificationList){
+            importanceList.add(notification);
+        }
 
         return new ResponseEntity<>(importanceList, HttpStatus.OK);
     }
@@ -45,8 +54,13 @@ public class NotificationService {
     public ResponseEntity<?> getNotificationList() {
 
         List<Notification> notificationList = notificationRepository.findAllByImportanceIsFalseOrderByCreatedAtDesc();
+        List<Notification> notificationList2 = new ArrayList<>();
 
-        return new ResponseEntity<>(notificationList, HttpStatus.OK);
+        for (Notification notification: notificationList){
+            notificationList2.add(notification);
+        }
+
+        return new ResponseEntity<>(notificationList2, HttpStatus.OK);
     }
 
 
@@ -55,17 +69,17 @@ public class NotificationService {
 
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지글입니다."));
 
-        return new ResponseEntity<>(notification, HttpStatus.OK);
+        return new ResponseEntity<>(new NotificationResponseDto(notification), HttpStatus.OK);
     }
 
 
     @Transactional
-    public ResponseEntity<?> updateNotification(Long id, NotificationRequestDto requestDto) {
+    public ResponseEntity<?> updateNotification(Long id, NotificationRequestDto requestDto) throws IOException {
 
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지글입니다."));
-        notification.update(requestDto);
+        notification.update(requestDto, s3UploadService, dir);
 
-        return new ResponseEntity<>(notification, HttpStatus.OK);
+        return ResponseEntity.status(ResponseCode.PUT_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.PUT_SUCCESS.getCode(), ResponseCode.PUT_SUCCESS.getMsg()));
     }
 
 
@@ -75,6 +89,6 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지글입니다."));
         notificationRepository.delete(notification);
 
-        return new ResponseEntity<>(notification, HttpStatus.OK);
+        return ResponseEntity.status(ResponseCode.DELETE_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.DELETE_SUCCESS.getCode(), ResponseCode.DELETE_SUCCESS.getMsg()));
     }
 }
