@@ -24,15 +24,15 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile multipartFile, String dirName, String noticeName) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName, String titleName) throws IOException {
 
-        File uploadFile = convert(multipartFile).orElseThrow(() -> new RuntimeException("파일전환 실패"));
-        return upload(uploadFile, dirName, noticeName);
+        File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("파일전환 실패"));
+        return upload(uploadFile, dirName, titleName);
     }
 
-    private String upload(File uploadFile, String dirName, String noticeName) {
+    private String upload(File uploadFile, String dirName, String titleName) {
 
-        String beforeFileName = dirName + "/" + noticeName;
+        String beforeFileName = dirName + "/" + titleName;
         String fileName = filenameReplaceAll(beforeFileName);
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
@@ -49,7 +49,7 @@ public class S3UploadService {
 
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return "https://odok-s3.s3.ap-northeast-2.amazonaws.com/" + fileName;
+        return "https://artizen-image.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
