@@ -1,7 +1,10 @@
 package com.example.artizen.service;
 
 import com.example.artizen.dto.request.CommunityRequestDto;
+import com.example.artizen.dto.response.CommunityResponseDto;
+import com.example.artizen.dto.response.MessageDto;
 import com.example.artizen.entity.Community;
+import com.example.artizen.entity.ResponseCode;
 import com.example.artizen.repository.CommunityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +32,7 @@ public class CommunityService {
         Community community = new Community(requestDto, s3UploadService, dir);
         communityRepository.save(community);
 
-        return new ResponseEntity<>(community, HttpStatus.OK);
+        return ResponseEntity.status(ResponseCode.POST_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.POST_SUCCESS.getCode(), ResponseCode.POST_SUCCESS.getMsg() ));
     }
 
 
@@ -47,7 +50,8 @@ public class CommunityService {
 
         Community community = communityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 커뮤니티 글을 찾을 수 없습니다."));
 
-        return new ResponseEntity<>(community, HttpStatus.OK);
+
+        return new ResponseEntity<>(new CommunityResponseDto(community), HttpStatus.OK);
     }
 
 
@@ -57,7 +61,7 @@ public class CommunityService {
         Community community = communityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 커뮤니티 글을 찾을 수 없습니다."));
         community.update(requestDto, s3UploadService, dir);
 
-        return new ResponseEntity<>(community, HttpStatus.OK);
+        return ResponseEntity.status(ResponseCode.PUT_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.PUT_SUCCESS.getCode(), ResponseCode.PUT_SUCCESS.getMsg()));
     }
 
 
@@ -67,6 +71,6 @@ public class CommunityService {
         Community community = communityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 커뮤니티 글을 찾을 수 없습니다."));
         communityRepository.delete(community);
 
-        return new ResponseEntity<>("커뮤니티 글 삭제 완료.", HttpStatus.OK);
+        return ResponseEntity.status(ResponseCode.DELETE_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.DELETE_SUCCESS.getCode(), ResponseCode.DELETE_SUCCESS.getMsg()));
     }
 }
