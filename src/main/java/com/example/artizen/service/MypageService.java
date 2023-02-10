@@ -2,9 +2,11 @@ package com.example.artizen.service;
 
 import com.example.artizen.dto.response.MypageResponseDto;
 import com.example.artizen.entity.Artizen;
+import com.example.artizen.entity.Community;
 import com.example.artizen.entity.Heart;
 import com.example.artizen.entity.Member;
 import com.example.artizen.repository.ArtizenRepository;
+import com.example.artizen.repository.CommunityRepository;
 import com.example.artizen.repository.HeartRepository;
 import com.example.artizen.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class MypageService {
     private final MemberRepository memberRepository;
     private final HeartRepository heartRepository;
     private final ArtizenRepository artizenRepository;
+    private final CommunityRepository communityRepository;
 
 
     public ResponseEntity<?> mypage(Member member) {
@@ -65,4 +68,21 @@ public class MypageService {
 
         return new ResponseEntity<>(myHearts, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> getCommunity(Member member, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<Community> communities = communityRepository.findByMember_MemberId(member.getId(), pageable);
+
+        if(communities.isEmpty()) {
+            return new ResponseEntity<>("작성한 커뮤니티 글이 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        List<MypageResponseDto> myCommunities = new ArrayList<>();
+        for (Community communityList : communities) {
+            myCommunities.add(new MypageResponseDto(communityList));
+        }
+
+        return new ResponseEntity<>(myCommunities, HttpStatus.OK);
+    }
+
 }
