@@ -3,6 +3,8 @@ package com.example.artizen.service;
 import com.example.artizen.dto.request.NotificationRequestDto;
 import com.example.artizen.dto.response.MessageDto;
 import com.example.artizen.dto.response.NotificationResponseDto;
+import com.example.artizen.entity.Member;
+import com.example.artizen.entity.MemberRoleEnum;
 import com.example.artizen.entity.Notification;
 import com.example.artizen.entity.ResponseCode;
 import com.example.artizen.repository.NotificationRepository;
@@ -15,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -28,12 +32,15 @@ public class NotificationService {
     private final S3UploadService s3UploadService;
 
     @Transactional
-    public ResponseEntity<?> createNotification(NotificationRequestDto requestDto) throws IOException {
+    public ResponseEntity<?> createNotification(Member member, NotificationRequestDto requestDto) throws IOException {
+
+        if (member.getAuthority() == MemberRoleEnum.USER)
+            throw new RuntimeException("권한없는 접근입니다.");
 
         Notification notification = new Notification(requestDto, s3UploadService, dir);
         notificationRepository.save(notification);
 
-        return ResponseEntity.status(ResponseCode.POST_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.POST_SUCCESS.getCode(), ResponseCode.POST_SUCCESS.getMsg() ));
+        return ResponseEntity.status(ResponseCode.POST_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.POST_SUCCESS.getCode(), ResponseCode.POST_SUCCESS.getMsg()));
     }
 
 
@@ -41,26 +48,32 @@ public class NotificationService {
     public ResponseEntity<?> getTop5() {
 
         List<Notification> notificationList = notificationRepository.findTop5ByImportanceIsTrueOrderByCreatedAtDesc();
-        List<Notification> importanceList = new ArrayList<>();
+        List<NotificationResponseDto> importanceList = new ArrayList<>();
 
-        for (Notification notification : notificationList){
-            importanceList.add(notification);
-        }
+        addNotification(notificationList, importanceList);
 
         return new ResponseEntity<>(importanceList, HttpStatus.OK);
     }
+
 
     @Transactional
     public ResponseEntity<?> getNotificationList() {
 
         List<Notification> notificationList = notificationRepository.findAllByImportanceIsFalseOrderByCreatedAtDesc();
-        List<Notification> notificationList2 = new ArrayList<>();
+        List<NotificationResponseDto> notificationResponseDtoList = new ArrayList<>();
 
-        for (Notification notification: notificationList){
-            notificationList2.add(notification);
-        }
+        List<Notification> importanceList = notificationRepository.findTop5ByImportanceIsTrueOrderByCreatedAtDesc();
+        List<NotificationResponseDto> importanceResponseDtoList = new ArrayList<>();
 
-        return new ResponseEntity<>(notificationList2, HttpStatus.OK);
+        addNotification(notificationList, notificationResponseDtoList);
+        addNotification(importanceList, importanceResponseDtoList);
+
+        Map<String, List<NotificationResponseDto>> mapList = new HashMap<>();
+
+        mapList.put("top5", importanceResponseDtoList);
+        mapList.put("notificationList", notificationResponseDtoList);
+
+        return new ResponseEntity<>(mapList, HttpStatus.OK);
     }
 
 
@@ -74,7 +87,10 @@ public class NotificationService {
 
 
     @Transactional
-    public ResponseEntity<?> updateNotification(Long id, NotificationRequestDto requestDto) throws IOException {
+    public ResponseEntity<?> updateNotification(Member member, Long id, NotificationRequestDto requestDto) throws IOException {
+
+        if (member.getAuthority() == MemberRoleEnum.USER)
+            throw new RuntimeException("권한없는 접근입니다.");
 
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지글입니다."));
         notification.update(requestDto, s3UploadService, dir);
@@ -84,11 +100,20 @@ public class NotificationService {
 
 
     @Transactional
-    public ResponseEntity<?> deleteNotification(Long id) {
+    public ResponseEntity<?> deleteNotification(Member member, Long id) {
+
+        if (member.getAuthority() == MemberRoleEnum.USER)
+            throw new RuntimeException("권한없는 접근입니다.");
 
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지글입니다."));
         notificationRepository.delete(notification);
 
         return ResponseEntity.status(ResponseCode.DELETE_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.DELETE_SUCCESS.getCode(), ResponseCode.DELETE_SUCCESS.getMsg()));
+    }
+
+    public void addNotification(List<Notification> notificationList, List<NotificationResponseDto> notificationResponseDtoList) {
+        for (Notification notification : notificationList) {
+            notificationResponseDtoList.add(new NotificationResponseDto(notification));
+        }
     }
 }

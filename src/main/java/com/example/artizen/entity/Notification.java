@@ -29,14 +29,14 @@ public class Notification extends TimeStamped {
     public Notification(NotificationRequestDto requestDto, S3UploadService s3UploadService, String dir) throws IOException {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.imageUrl = s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle());
+        this.imageUrl = requestDto.getImageUrl() != null ? s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle()) : null;
         this.importance = requestDto.getImportance().equals("0") ? false : true;
     }
 
-    public void update(NotificationRequestDto requestDto, S3UploadService s3UploadService, String dir) throws IOException{
+    public void update(NotificationRequestDto requestDto, S3UploadService s3UploadService, String dir) throws IOException {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.imageUrl = s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle());
+        this.imageUrl = requestDto.getImageUrl() != null ? s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle()) : null;
         this.importance = requestDto.getImportance().equals("0") ? false : true;
     }
 }
