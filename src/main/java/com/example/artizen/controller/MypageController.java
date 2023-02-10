@@ -32,5 +32,14 @@ public class MypageController extends TimeStamped {
         return mypageService.getHearts(memberDetails.getMember(), pageTemp, size);
     }
 
+    //내가 작성한 커뮤니티 글
+    @GetMapping(value = "/community")
+    public ResponseEntity<?> getCommunity (@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                           @RequestParam(value = "page") int page,
+                                           @RequestParam(value = "size") int size) {
+        int pageTemp = page -1;
+        return mypageService.getCommunity(memberDetails.getMember(), pageTemp, size);
+    }
+
 
 }
