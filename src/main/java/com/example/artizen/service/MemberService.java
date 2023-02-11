@@ -140,16 +140,6 @@ public class MemberService {
 
         String subId = UUID.randomUUID().toString();
 
-        System.out.println();
-        System.out.println("==========================================");
-        System.out.println("카카오 사용자 정보: " + id + ", " + nickname);
-        System.out.println("gender = " + gender);
-        System.out.println("ageRange = " + ageRange);
-        System.out.println("profileImgUrl = " + profileImgUrl);
-        System.out.println("birthday = " + birthday);
-        System.out.println("==========================================");
-        System.out.println();
-
         return new KakaoMemberInfoDto(id, nickname, gender, ageRange, birthday, profileImgUrl, subId);
     }
 

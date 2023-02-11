@@ -42,14 +42,12 @@ public class TokenProvider {
 
     public TokenDto generateTokenDto(Authentication authentication) {
 
-        System.out.println("authentication in tokenProvider line 45= " + authentication);
         // 권한들 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         String subId = authentication.toString();
-        System.out.println("subId in tokenProvider line 52= " + subId);
 
         long now = (new Date()).getTime();
 
@@ -85,22 +83,12 @@ public class TokenProvider {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
-        // 클레임에서 권한 정보 가져오기
-//        Collection<? extends GrantedAuthority> authorities =
-//                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-//                        .map(SimpleGrantedAuthority::new)
-//                        .collect(Collectors.toList());
-
         String subId = claims.getSubject();
         Member member = memberRepository.findBySubId(subId)
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + subId));
 
         MemberDetailsImpl memberDetails = new MemberDetailsImpl(member);
         return new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
-        // UserDetails 객체를 만들어서 Authentication 리턴
-//        UserDetails principal = new User(claims.getSubject(), "", authorities);
-//
-//        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
     // Security 에서 인증 유저 정보 가져오기
