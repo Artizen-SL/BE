@@ -54,7 +54,7 @@ public class Artizen extends TimeStamped {
     private List<Time> timeList;
 
     @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
-    private List<Heart> heartList;
+    private List<ArtizenHeart> artizenHeartList;
 
     @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Comment> commentList;

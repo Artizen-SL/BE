@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +29,8 @@ public class Community extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
+    private List<CommunityHeart> communityHeartList;
 
     public Community(CommunityRequestDto requestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
         this.title = requestDto.getTitle();

@@ -13,5 +13,5 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
     Slice<Community> findAllByOrderByCreatedAtDesc(Pageable pageable);
     
-    Slice<Community> findByMember_MemberId(String memberId, Pageable pageable);
+    Slice<Community> findByMember_Id(String memberId, Pageable pageable);
 }

@@ -42,7 +42,10 @@ public class Member extends TimeStamped {
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Heart> heartList;
+    private List<ArtizenHeart> artizenHeartList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<CommunityHeart> communityHeartList;
 
     public Member(String kakaoId, String nickname, String encodedPassword, MemberRoleEnum role, MemberGenderEnum gender, String ageRange, String profileImgUrl, String birthday, String subId) {
         this.id = kakaoId;

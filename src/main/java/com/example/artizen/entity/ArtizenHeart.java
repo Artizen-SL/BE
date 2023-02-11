@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Heart extends TimeStamped {
+public class ArtizenHeart extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,11 @@ public class Heart extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ARTIZEN_ID", nullable = false)
     private Artizen artizen;
+
+    public ArtizenHeart(Artizen artizen, Member member){
+        this.artizen = artizen;
+        this.member = member;
+    }
 
 }
 
