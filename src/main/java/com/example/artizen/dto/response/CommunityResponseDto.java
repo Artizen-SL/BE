@@ -1,6 +1,7 @@
 package com.example.artizen.dto.response;
 
 import com.example.artizen.entity.Community;
+import com.example.artizen.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,6 +16,7 @@ public class CommunityResponseDto {
     private String imageUrl;
     private String tag;
     private String createdAt;
+    private Member member;
 
     public CommunityResponseDto(Community community){
         this.id = community.getId();
@@ -23,5 +25,6 @@ public class CommunityResponseDto {
         this.imageUrl = community.getImageUrl();
         this.tag = community.getTag();
         this.createdAt = community.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.member = community.getMember();
     }
 }

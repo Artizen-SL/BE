@@ -10,5 +10,8 @@ import java.util.List;
 public interface CommunityRepository extends JpaRepository<Community, Long> {
 
     List<Community> findAllByOrderByCreatedAtDesc();
+
+    Slice<Community> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    
     Slice<Community> findByMember_MemberId(String memberId, Pageable pageable);
 }
