@@ -93,6 +93,7 @@ public class CommunityService {
         return ResponseEntity.status(ResponseCode.DELETE_SUCCESS.getStatus()).body(new MessageDto(ResponseCode.DELETE_SUCCESS.getCode(), ResponseCode.DELETE_SUCCESS.getMsg()));
     }
 
+
     public boolean validateMember(Member member, Community community){
         return !member.getId().equals(community.getMember().getId());
     }
