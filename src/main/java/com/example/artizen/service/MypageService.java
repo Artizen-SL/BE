@@ -1,14 +1,9 @@
 package com.example.artizen.service;
 
+import com.example.artizen.dto.request.MypageRequestDto;
 import com.example.artizen.dto.response.MypageResponseDto;
-import com.example.artizen.entity.Artizen;
-import com.example.artizen.entity.Community;
-import com.example.artizen.entity.ArtizenHeart;
-import com.example.artizen.entity.Member;
-import com.example.artizen.repository.ArtizenRepository;
-import com.example.artizen.repository.CommunityRepository;
-import com.example.artizen.repository.ArtizenHeartRepository;
-import com.example.artizen.repository.MemberRepository;
+import com.example.artizen.entity.*;
+import com.example.artizen.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +25,8 @@ public class MypageService {
     private final ArtizenHeartRepository artizenHeartRepository;
     private final ArtizenRepository artizenRepository;
     private final CommunityRepository communityRepository;
+    private final MyticketRepository myticketRepository;
+    private final S3UploadService s3UploadService;
 
 
     public ResponseEntity<?> mypage(Member member) {
@@ -60,10 +58,7 @@ public class MypageService {
                     () -> new IllegalArgumentException("해당 컨텐츠 정보가 없습니다.")
             );
 
-            MypageResponseDto mypageResponseDto = new MypageResponseDto(heartContent);
-
-            myHearts.add(mypageResponseDto);
-
+            myHearts.add(new MypageResponseDto(heartContent));
         }
 
         return new ResponseEntity<>(myHearts, HttpStatus.OK);
@@ -85,4 +80,22 @@ public class MypageService {
         return new ResponseEntity<>(myCommunities, HttpStatus.OK);
     }
 
+    public ResponseEntity<?> writeMyticket(Member member, MypageRequestDto mypageRequestDto) throws IOException {
+
+        Optional<Member> memberCheck = memberRepository.findById(member.getId());
+        if(memberCheck.isEmpty()) {
+            return new ResponseEntity<>("로그인이 필요한 서비스 입니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Artizen> artizen = artizenRepository.findById(mypageRequestDto.getArtizenId());
+        if(artizen.isEmpty()) {
+            return new ResponseEntity<>("해당 컨텐츠가 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        String imgUrl = s3UploadService.upload(mypageRequestDto.getTicketImg(), "/myTicket");
+
+        myticketRepository.save(new Myticket(member, artizen.get(), mypageRequestDto, imgUrl));
+
+        return new ResponseEntity<>("마이티켓 등록 완료! 🤩", HttpStatus.OK);
+    }
 }
