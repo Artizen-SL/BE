@@ -16,7 +16,7 @@ public class CommunityResponseDto {
     private String imageUrl;
     private String tag;
     private String createdAt;
-    private Member member;
+    private String nickName;
 
     public CommunityResponseDto(Community community){
         this.id = community.getId();
@@ -25,6 +25,6 @@ public class CommunityResponseDto {
         this.imageUrl = community.getImageUrl();
         this.tag = community.getTag();
         this.createdAt = community.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        this.member = community.getMember();
+        this.nickName = community.getMember().getNickname();
     }
 }

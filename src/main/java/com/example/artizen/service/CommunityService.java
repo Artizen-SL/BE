@@ -94,7 +94,7 @@ public class CommunityService {
     }
 
 
-    public boolean validateMember(Member member, Community community){
+    public boolean validateMember(Member member, Community community) {
         return !member.getId().equals(community.getMember().getId());
     }
 }
