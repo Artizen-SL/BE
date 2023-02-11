@@ -1,9 +1,11 @@
 package com.example.artizen.controller;
 
 import com.example.artizen.dto.request.NotificationRequestDto;
+import com.example.artizen.security.MemberDetailsImpl;
 import com.example.artizen.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -15,9 +17,10 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping
-    public ResponseEntity<?> createNotification(@ModelAttribute NotificationRequestDto requestDto) throws IOException {
+    public ResponseEntity<?> createNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                                @ModelAttribute NotificationRequestDto requestDto) throws IOException {
 
-        return notificationService.createNotification(requestDto);
+        return notificationService.createNotification(memberDetails.getMember(), requestDto);
     }
 
 
@@ -43,16 +46,18 @@ public class NotificationController {
 
 
     @PutMapping(value = "/{notification_id}")
-    public ResponseEntity<?> updateNotification(@PathVariable(name = "notification_id") Long id,
+    public ResponseEntity<?> updateNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                                @PathVariable(name = "notification_id") Long id,
                                                 @ModelAttribute NotificationRequestDto requestDto) throws IOException{
 
-        return notificationService.updateNotification(id, requestDto);
+        return notificationService.updateNotification(memberDetails.getMember(), id, requestDto);
     }
 
 
     @DeleteMapping(value = "/{notification_id}")
-    public ResponseEntity<?> deleteNotification(@PathVariable(name = "notification_id") Long id){
+    public ResponseEntity<?> deleteNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                                @PathVariable(name = "notification_id") Long id){
 
-        return notificationService.deleteNotification(id);
+        return notificationService.deleteNotification(memberDetails.getMember(), id);
     }
 }
