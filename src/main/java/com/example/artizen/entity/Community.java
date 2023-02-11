@@ -35,7 +35,7 @@ public class Community extends TimeStamped {
     public Community(CommunityRequestDto requestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.imageUrl = requestDto.getImageUrl() != null ? s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle()) : null;
+        this.imageUrl = requestDto.getImageUrl() != null ? s3UploadService.upload(requestDto.getImageUrl(), dir) : null;
         this.tag = requestDto.getTag();
         this.member = member;
     }
@@ -43,7 +43,7 @@ public class Community extends TimeStamped {
     public void update(CommunityRequestDto requestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.imageUrl = requestDto.getImageUrl() != null ? s3UploadService.upload(requestDto.getImageUrl(), dir, requestDto.getTitle()) : null;
+        this.imageUrl = requestDto.getImageUrl() != null ? s3UploadService.upload(requestDto.getImageUrl(), dir) : null;
         this.tag = requestDto.getTag();
         this.member = member;
     }

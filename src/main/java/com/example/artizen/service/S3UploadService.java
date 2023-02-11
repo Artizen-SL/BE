@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -24,17 +26,20 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile multipartFile, String dirName, String titleName) throws IOException {
+    @Value("${S3_BaseUrl}")
+    private String baseUrl;
+
+    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
 
         File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("파일전환 실패"));
-        return upload(uploadFile, dirName, titleName);
+        return upload(uploadFile, dirName);
     }
 
-    private String upload(File uploadFile, String dirName, String titleName) {
+    private String upload(File uploadFile, String dirName) {
+        Random random = new Random();
+        RandomString fileName = new RandomString(20, random);
 
-        String beforeFileName = dirName + "/" + titleName;
-        String fileName = filenameReplaceAll(beforeFileName);
-        String uploadImageUrl = putS3(uploadFile, fileName);
+        String uploadImageUrl = putS3(uploadFile, dirName + "/" + fileName.nextString());
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }
@@ -49,7 +54,7 @@ public class S3UploadService {
 
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return "https://artizen-image.s3.ap-northeast-2.amazonaws.com/" + fileName;
+        return baseUrl + fileName;
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
