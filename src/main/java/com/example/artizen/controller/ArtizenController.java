@@ -43,9 +43,11 @@ public class ArtizenController {
 
     // 장르별 전체리스트 조회
     @GetMapping(value = "/artizens")
-    public ResponseEntity<?> getArtizenList(@RequestParam String genre) {
+    public ResponseEntity<?> getArtizenList(@RequestParam String genre,
+                                            @RequestParam int page,
+                                            @RequestParam int size) {
 
-        return artizenService.getArtizenList(genre);
+        return artizenService.getArtizenList(genre, page, size);
     }
 
 

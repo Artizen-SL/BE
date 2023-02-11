@@ -10,9 +10,9 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,47 +87,49 @@ public class ArtizenService {
 
 
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getArtizenList(String genre) {
+    public ResponseEntity<?> getArtizenList(String genre, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         if (genre.contains("연극/뮤지컬")) {
-            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("연극");
-            List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains("뮤지컬");
+            Slice<Artizen> theaterList = artizenRepository.findAllByCategoryContains("연극", pageable);
+            Slice<Artizen> musicalList = artizenRepository.findAllByCategoryContains("뮤지컬", pageable);
 
-            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+            List<ArtizenResponseDto> artizenList = new ArrayList<>();
 
-            addElements(artizenList1, artizenResponseDtoList);
-            addElements(artizenList2, artizenResponseDtoList);
+            addArtizen(theaterList, artizenList);
+            addArtizen(musicalList, artizenList);
 
-            return ResponseEntity.ok(artizenResponseDtoList);
+            return ResponseEntity.ok(artizenList);
 
         } else if (genre.contains("콘서트")) {
-            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("대중음악");
+            Slice<Artizen> concertList = artizenRepository.findAllByCategoryContains("대중음악", pageable);
 
-            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+            List<ArtizenResponseDto> artizenList = new ArrayList<>();
 
-            addElements(artizenList1, artizenResponseDtoList);
+            addArtizen(concertList, artizenList);
 
-            return ResponseEntity.ok(artizenResponseDtoList);
+            return ResponseEntity.ok(artizenList);
 
         } else if (genre.contains("클래식/무용")) {
-            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("클래식");
-            List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains("무용");
+            Slice<Artizen> classicList = artizenRepository.findAllByCategoryContains("클래식", pageable);
+            Slice<Artizen> dancingList = artizenRepository.findAllByCategoryContains("무용", pageable);
 
-            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+            List<ArtizenResponseDto> artizenList = new ArrayList<>();
 
-            addElements(artizenList1, artizenResponseDtoList);
-            addElements(artizenList2, artizenResponseDtoList);
+            addArtizen(classicList, artizenList);
+            addArtizen(dancingList, artizenList);
 
-            return ResponseEntity.ok(artizenResponseDtoList);
+            return ResponseEntity.ok(artizenList);
 
         } else {
-            List<Artizen> artizenList1 = artizenRepository.findAllByCategoryContains("서커스/마술");
+            Slice<Artizen> circusList = artizenRepository.findAllByCategoryContains("서커스/마술", pageable);
 
-            List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+            List<ArtizenResponseDto> artizenList = new ArrayList<>();
 
-            addElements(artizenList1, artizenResponseDtoList);
+            addArtizen(circusList, artizenList);
 
-            return ResponseEntity.ok(artizenResponseDtoList);
+            return ResponseEntity.ok(artizenList);
         }
     }
 
@@ -220,19 +222,19 @@ public class ArtizenService {
 //        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
 //        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
 
-        List<Artizen> artizenList1 = artizenRepository.findAllByNameContains(keyword);
-        List<Artizen> artizenList2 = artizenRepository.findAllByCategoryContains(keyword);
-        List<Artizen> artizenList3 = artizenRepository.findAllByPlaceContains(keyword);
-        List<Artizen> artizenList4 = artizenRepository.findAllByContentContains(keyword);
+        List<Artizen> nameContainsList = artizenRepository.findAllByNameContains(keyword);
+        List<Artizen> categoryContainsList = artizenRepository.findAllByCategoryContains(keyword);
+        List<Artizen> placeContainsList = artizenRepository.findAllByPlaceContains(keyword);
+        List<Artizen> contentContainsList = artizenRepository.findAllByContentContains(keyword);
 
-        List<ArtizenResponseDto> artizenResponseDtoList = new ArrayList<>();
+        List<ArtizenResponseDto> artizenList = new ArrayList<>();
 
-        addElements(artizenList1, artizenResponseDtoList);
-        addElements(artizenList2, artizenResponseDtoList);
-        addElements(artizenList3, artizenResponseDtoList);
-        addElements(artizenList4, artizenResponseDtoList);
+        addElements(nameContainsList, artizenList);
+        addElements(categoryContainsList, artizenList);
+        addElements(placeContainsList, artizenList);
+        addElements(contentContainsList, artizenList);
 
-        return ResponseEntity.ok(artizenResponseDtoList);
+        return ResponseEntity.ok(artizenList);
     }
 
 
@@ -268,10 +270,10 @@ public class ArtizenService {
     }
 
 
-//    public void addElements(Page<Artizen> pageList, List<ArtizenResponseDto> list) {
-//        for (Artizen artizen : pageList) {
-//            list.add(new ArtizenResponseDto(artizen));
-//        }
-//    }
+    public void addArtizen(Slice<Artizen> pageList, List<ArtizenResponseDto> list) {
+        for (Artizen artizen : pageList) {
+            list.add(new ArtizenResponseDto(artizen));
+        }
+    }
 
 }
