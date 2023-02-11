@@ -3,11 +3,11 @@ package com.example.artizen.service;
 import com.example.artizen.dto.response.MypageResponseDto;
 import com.example.artizen.entity.Artizen;
 import com.example.artizen.entity.Community;
-import com.example.artizen.entity.Heart;
+import com.example.artizen.entity.ArtizenHeart;
 import com.example.artizen.entity.Member;
 import com.example.artizen.repository.ArtizenRepository;
 import com.example.artizen.repository.CommunityRepository;
-import com.example.artizen.repository.HeartRepository;
+import com.example.artizen.repository.ArtizenHeartRepository;
 import com.example.artizen.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class MypageService {
 
     private final MemberRepository memberRepository;
-    private final HeartRepository heartRepository;
+    private final ArtizenHeartRepository artizenHeartRepository;
     private final ArtizenRepository artizenRepository;
     private final CommunityRepository communityRepository;
 
@@ -45,16 +45,16 @@ public class MypageService {
 
     public ResponseEntity<?> getHearts(Member member, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Slice<Heart> hearts = heartRepository.findHeartsByMember_Id(member.getId(), pageable);
+        Slice<ArtizenHeart> hearts = artizenHeartRepository.findHeartsByMember_Id(member.getId(), pageable);
 
         List<MypageResponseDto> myHearts = new ArrayList<>();
-        for (Heart heartList : hearts) {
+        for (ArtizenHeart artizenHeartList : hearts) {
 
             if(hearts.isEmpty()) {
                 return new ResponseEntity<>("좋아요한 컨텐츠가 없습니다.", HttpStatus.BAD_REQUEST);
             }
 
-            String content = heartList.getArtizen().getId();
+            String content = artizenHeartList.getArtizen().getId();
 
             Artizen heartContent = artizenRepository.findById(content).orElseThrow(
                     () -> new IllegalArgumentException("해당 컨텐츠 정보가 없습니다.")
@@ -71,7 +71,7 @@ public class MypageService {
 
     public ResponseEntity<?> getCommunity(Member member, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Slice<Community> communities = communityRepository.findByMember_MemberId(member.getId(), pageable);
+        Slice<Community> communities = communityRepository.findByMember_Id(member.getId(), pageable);
 
         if(communities.isEmpty()) {
             return new ResponseEntity<>("작성한 커뮤니티 글이 없습니다.", HttpStatus.BAD_REQUEST);
