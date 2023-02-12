@@ -1,6 +1,7 @@
 package com.example.artizen.service;
 
 import com.example.artizen.dto.request.CommunityRequestDto;
+import com.example.artizen.dto.response.CommunityListResponseDto;
 import com.example.artizen.dto.response.CommunityResponseDto;
 import com.example.artizen.dto.response.MessageDto;
 import com.example.artizen.entity.Community;
@@ -53,7 +54,9 @@ public class CommunityService {
             communityResponseDtoList.add(new CommunityResponseDto(community));
         }
 
-        return new ResponseEntity<>(communityResponseDtoList, HttpStatus.OK);
+        CommunityListResponseDto communityListResponseDto = new CommunityListResponseDto(communityResponseDtoList, communityList.isLast());
+
+        return new ResponseEntity<>(communityListResponseDto, HttpStatus.OK);
     }
 
 
