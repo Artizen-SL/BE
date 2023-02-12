@@ -49,7 +49,7 @@ public class MypageService {
         for (ArtizenHeart artizenHeartList : hearts) {
 
             if(hearts.isEmpty()) {
-                return new ResponseEntity<>("좋아요한 컨텐츠가 없습니다.", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("좋아요한 컨텐츠가 없습니다.", HttpStatus.NO_CONTENT);
             }
 
             String content = artizenHeartList.getArtizen().getId();
@@ -69,7 +69,7 @@ public class MypageService {
         Slice<Community> communities = communityRepository.findByMember_Id(member.getId(), pageable);
 
         if(communities.isEmpty()) {
-            return new ResponseEntity<>("작성한 커뮤니티 글이 없습니다.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("작성한 커뮤니티 글이 없습니다.", HttpStatus.NO_CONTENT);
         }
 
         List<MypageResponseDto> myCommunities = new ArrayList<>();
@@ -89,7 +89,7 @@ public class MypageService {
 
         Optional<Artizen> artizen = artizenRepository.findById(mypageRequestDto.getArtizenId());
         if(artizen.isEmpty()) {
-            return new ResponseEntity<>("해당 컨텐츠가 없습니다.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("해당 컨텐츠가 없습니다.", HttpStatus.NO_CONTENT);
         }
 
         String imgUrl = s3UploadService.upload(mypageRequestDto.getTicketImg(), "/myTicket");
@@ -97,5 +97,21 @@ public class MypageService {
         myticketRepository.save(new Myticket(member, artizen.get(), mypageRequestDto, imgUrl));
 
         return new ResponseEntity<>("마이티켓 등록 완료! 🤩", HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getMytickets(Member member, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<Myticket> myTickets = myticketRepository.findByMember_Id(member.getId(), pageable);
+
+        if(myTickets.isEmpty()) {
+            return new ResponseEntity<>("기록한 마이티켓이 없습니다.", HttpStatus.NO_CONTENT);
+        }
+
+        List<MypageResponseDto> myTicketList = new ArrayList<>();
+        for (Myticket myTicket : myTickets) {
+            myTicketList.add(new MypageResponseDto(myTicket));
+        }
+
+        return new ResponseEntity<>(myTicketList, HttpStatus.OK);
     }
 }

@@ -47,4 +47,13 @@ public class MypageController extends TimeStamped {
                                             @ModelAttribute MypageRequestDto mypageRequestDto) throws IOException {
         return mypageService.writeMyticket(memberDetails.getMember(), mypageRequestDto);
     }
+
+    //마이티켓 목록
+    @GetMapping(value = "/ticket/list")
+    public ResponseEntity<?> getMytickets (@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                           @RequestParam(value = "page") int page,
+                                           @RequestParam(value = "size") int size) {
+        int pageTemp = page -1;
+        return mypageService.getMytickets(memberDetails.getMember(), pageTemp, size);
+    }
 }
