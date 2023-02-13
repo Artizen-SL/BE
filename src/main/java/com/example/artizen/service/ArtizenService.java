@@ -6,9 +6,9 @@ import com.example.artizen.entity.Image;
 import com.example.artizen.repository.ArtizenRepository;
 import com.example.artizen.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,8 +60,9 @@ public class ArtizenService {
                 String genre = jsonArray.getJSONObject(i).get("genrenm").toString();
                 String state = jsonArray.getJSONObject(i).get("prfstate").toString();
                 String openrun = jsonArray.getJSONObject(i).get("openrun").toString();
+                double[] location = getLocationinfo(facility);
 
-                ArtizenResponseDto artizenResponseDto = new ArtizenResponseDto(showId, name, genre, state, startDate, endDate, posterUrl, facility);
+                ArtizenResponseDto artizenResponseDto = new ArtizenResponseDto(showId, name, genre, state, startDate, endDate, posterUrl, facility, location);
                 existArtizen(artizenResponseDto);
 
                 Map<String, Object> show = new HashMap<>();
@@ -75,6 +76,7 @@ public class ArtizenService {
                 show.put("genre", genre);
                 show.put("state", state);
                 show.put("openrun", openrun);
+                show.put("location", location);
 
                 showList.add(show);
             }
@@ -83,6 +85,50 @@ public class ArtizenService {
             e.printStackTrace();
         }
         return ResponseEntity.ok(showList);
+    }
+
+    //공연 시설 목록 가져오는 메서드
+    private double[] getLocationinfo(String facility) {
+        String url = "http://kopis.or.kr/openApi/restful/prfplc?service=" + key + "&cpage=" + 1 + "&rows=" + 20 + "&shprfnmfct=" + facility;
+
+        RestTemplate restTemplate = new RestTemplate();
+        String xmlResult = restTemplate.getForObject(url, String.class);
+
+        double[] location = new double[2];
+        if(xmlResult != null) {
+            JSONObject jsonObject = XML.toJSONObject(xmlResult);
+            JSONObject jsonObject1 = jsonObject.getJSONObject("dbs");
+
+            if (jsonObject1.get("db") instanceof JSONArray) {
+                JSONArray facilityArray = jsonObject1.getJSONArray("db");
+
+                for (int i = 0; i < facilityArray.length(); i++) {
+                    String facilityCode = facilityArray.getJSONObject(i).get("mt10id").toString();
+
+                    location = getLocation(facilityCode);
+                }
+            } else {
+                JSONObject facilityObject = jsonObject1.getJSONObject("db");
+
+                String facilityCode = facilityObject.get("mt10id").toString();
+
+                location = getLocation(facilityCode);
+            }
+        }
+        return location;
+    }
+
+    private double[] getLocation(String facilityCode) {
+        String url = "http://www.kopis.or.kr/openApi/restful/prfplc/" + facilityCode + "?service=" + key;
+
+        RestTemplate restTemplate = new RestTemplate();
+        String xmlResult = restTemplate.getForObject(url, String.class);
+        JSONObject jsonObject = XML.toJSONObject(xmlResult);
+
+        double latitude = Double.parseDouble(jsonObject.getJSONObject("dbs").getJSONObject("db").get("la").toString());
+        double longitude = Double.parseDouble(jsonObject.getJSONObject("dbs").getJSONObject("db").get("lo").toString());
+
+        return new double[]{latitude, longitude};
     }
 
 

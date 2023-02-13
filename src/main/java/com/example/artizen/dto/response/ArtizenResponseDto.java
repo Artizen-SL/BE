@@ -19,9 +19,10 @@ public class ArtizenResponseDto {
     private String price;
     private String content;
     private String staff;
+    private double[] location;
 
     public ArtizenResponseDto(String id, String name, String genre, String state,
-                              String startDate, String endDate, String posterUrl, String facility) {
+                              String startDate, String endDate, String posterUrl, String facility, double[] location) {
         this.id = id;
         this.name = name;
         this.genre = genre;
@@ -30,6 +31,7 @@ public class ArtizenResponseDto {
         this.endDate = endDate;
         this.posterUrl = posterUrl;
         this.facility = facility;
+        this.location = location;
     }
 
     public ArtizenResponseDto(String id, String name, String genre, String state,
