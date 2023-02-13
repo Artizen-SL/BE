@@ -11,6 +11,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,5 +114,44 @@ public class MypageService {
         }
 
         return new ResponseEntity<>(myTicketList, HttpStatus.OK);
+    }
+
+
+    @Transactional
+    public ResponseEntity<?> updateMyTicket(Member member, Long id,MypageRequestDto mypageRequestDto) throws IOException{
+
+        Optional<Member> memberCheck = memberRepository.findById(member.getId());
+        if(memberCheck.isEmpty()) {
+            return new ResponseEntity<>("로그인이 필요한 서비스 입니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Myticket> myTicket = myticketRepository.findById(id);
+        if (myTicket.isEmpty()){
+            return new ResponseEntity<>("존재하지 않는 티켓 기록입니다.", HttpStatus.NO_CONTENT);
+        }
+
+        String imgUrl = s3UploadService.upload(mypageRequestDto.getTicketImg(), "/myTicket");
+
+        myTicket.get().update(mypageRequestDto, imgUrl);
+
+        return new ResponseEntity<>("마이티켓 수정 완료! 🤩", HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteMyTicket(Member member, Long id){
+
+        Optional<Member> memberCheck = memberRepository.findById(member.getId());
+        if(memberCheck.isEmpty()) {
+            return new ResponseEntity<>("로그인이 필요한 서비스 입니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Myticket> myTicket = myticketRepository.findById(id);
+        if (myTicket.isEmpty()){
+            return new ResponseEntity<>("존재하지 않는 티켓 기록입니다.", HttpStatus.NO_CONTENT);
+        }
+
+        myticketRepository.delete(myTicket.get());
+
+        return new ResponseEntity<>("마이티켓 삭제 완료! 🤩", HttpStatus.OK);
     }
 }
