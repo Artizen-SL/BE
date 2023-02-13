@@ -46,6 +46,7 @@ public class Artizen extends TimeStamped {
     private String status;
 
     private double[] location;
+    private long totalHeart;
 
     @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Image> imageList;
@@ -82,5 +83,9 @@ public class Artizen extends TimeStamped {
         this.date = artizenResponseDto.getStartDate() + " ~ " + artizenResponseDto.getEndDate();
         this.category = artizenResponseDto.getGenre();
         this.status = artizenResponseDto.getState();
+    }
+
+    public void updateHeartNum (long heartNum) {
+        this.totalHeart = heartNum;
     }
 }
