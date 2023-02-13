@@ -45,7 +45,7 @@ public class Artizen extends TimeStamped {
     @Column(nullable = false)
     private String status;
 
-    private String location;
+    private double[] location;
 
     @OneToMany(mappedBy = "artizen", cascade = CascadeType.REMOVE)
     private List<Image> imageList;
@@ -68,6 +68,7 @@ public class Artizen extends TimeStamped {
         this.date = artizenResponseDto.getStartDate() + " ~ " + artizenResponseDto.getEndDate();
         this.category = artizenResponseDto.getGenre();
         this.status = artizenResponseDto.getState();
+        this.location = artizenResponseDto.getLocation();
     }
 
     public void update(ArtizenResponseDto artizenResponseDto) {
