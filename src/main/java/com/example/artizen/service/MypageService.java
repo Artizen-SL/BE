@@ -93,7 +93,7 @@ public class MypageService {
             return new ResponseEntity<>("해당 컨텐츠가 없습니다.", HttpStatus.NO_CONTENT);
         }
 
-        String imgUrl = s3UploadService.upload(mypageRequestDto.getTicketImg(), "/myTicket");
+        String imgUrl = s3UploadService.upload(mypageRequestDto.getTicketImg(), "myTicket");
 
         myticketRepository.save(new Myticket(member, artizen.get(), mypageRequestDto, imgUrl));
 
