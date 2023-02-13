@@ -30,11 +30,17 @@ public class HeartService {
             ArtizenHeart artizenHeart = new ArtizenHeart(artizen, member);
             artizenHeartRepository.save(artizenHeart);
 
+            long heartNum = artizenHeartRepository.findAllByArtizenId(id).size();
+            artizen.updateHeartNum(heartNum);
+
             return ResponseEntity.status(ResponseCode.CHECK_HEART.getStatus()).body(new MessageDto(ResponseCode.CHECK_HEART.getCode(), ResponseCode.CHECK_HEART.getMsg()));
         }
 
         ArtizenHeart artizenHeart = artizenHeartRepository.findByArtizenAndMember(artizen, member);
         artizenHeartRepository.delete(artizenHeart);
+
+        long heartNum = artizenHeartRepository.findAllByArtizenId(id).size();
+        artizen.updateHeartNum(heartNum);
 
         return ResponseEntity.status(ResponseCode.CANCEL_HEART.getStatus()).body(new MessageDto(ResponseCode.CANCEL_HEART.getCode(), ResponseCode.CANCEL_HEART.getMsg()));
     }

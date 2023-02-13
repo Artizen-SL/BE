@@ -1,7 +1,6 @@
 package com.example.artizen.repository;
 
 import com.example.artizen.entity.Artizen;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,5 +26,9 @@ public interface ArtizenRepository extends JpaRepository<Artizen, String> {
     List<Artizen> findAllByPlaceContains(String keyword);
 
     List<Artizen> findAllByContentContains(String keyword);
+
+    List<Artizen> findTop3ByOrderByCreatedAtDesc();
+
+    List<Artizen> findTop4ByOrderByTotalHeartDesc();
 
 }
