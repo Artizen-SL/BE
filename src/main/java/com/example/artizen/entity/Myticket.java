@@ -34,4 +34,10 @@ public class Myticket extends TimeStamped {
         this.member = member;
         this.artizen = artizen;
     }
+
+    public void update(MypageRequestDto mypageRequestDto, String imgUrl){
+        this.review = mypageRequestDto.getReview();
+        this.ticketImg = imgUrl;
+        this.star = mypageRequestDto.getStar();
+    }
 }

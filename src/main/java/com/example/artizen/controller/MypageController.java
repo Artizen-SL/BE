@@ -56,4 +56,20 @@ public class MypageController extends TimeStamped {
         int pageTemp = page -1;
         return mypageService.getMytickets(memberDetails.getMember(), pageTemp, size);
     }
+
+
+    @PutMapping(value = "/ticket/{myTicket_id}")
+    public ResponseEntity<?> updateMyTicket(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                            @PathVariable(name = "myTicket_id") Long id,
+                                            @ModelAttribute MypageRequestDto mypageRequestDto) throws IOException{
+
+        return mypageService.updateMyTicket(memberDetails.getMember(), id, mypageRequestDto);
+    }
+
+    @DeleteMapping(value = "/ticket/{myTicket_id}")
+    public ResponseEntity<?> deleteMyTicket(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                            @PathVariable(name = "myTicket_id") Long id){
+
+        return mypageService.deleteMyTicket(memberDetails.getMember(), id);
+    }
 }
