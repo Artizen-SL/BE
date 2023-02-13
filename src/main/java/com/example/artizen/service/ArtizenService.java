@@ -1,5 +1,6 @@
 package com.example.artizen.service;
 
+import com.example.artizen.dto.response.ArtizenListResponseDto;
 import com.example.artizen.dto.response.ArtizenResponseDto;
 import com.example.artizen.entity.Artizen;
 import com.example.artizen.entity.Image;
@@ -95,7 +96,7 @@ public class ArtizenService {
         String xmlResult = restTemplate.getForObject(url, String.class);
 
         double[] location = new double[2];
-        if(xmlResult != null) {
+        if (xmlResult != null) {
             JSONObject jsonObject = XML.toJSONObject(xmlResult);
             JSONObject jsonObject1 = jsonObject.getJSONObject("dbs");
 
@@ -146,7 +147,16 @@ public class ArtizenService {
             addArtizen(theaterList, artizenList);
             addArtizen(musicalList, artizenList);
 
-            return ResponseEntity.ok(artizenList);
+            if (theaterList.isLast() && musicalList.isLast()) {
+                ArtizenListResponseDto artizenListResponseDto = new ArtizenListResponseDto(artizenList, true);
+
+                return ResponseEntity.ok(artizenListResponseDto);
+
+            } else {
+                ArtizenListResponseDto artizenListResponseDto = new ArtizenListResponseDto(artizenList, false);
+
+                return ResponseEntity.ok(artizenListResponseDto);
+            }
 
         } else if (genre.contains("콘서트")) {
             Slice<Artizen> concertList = artizenRepository.findAllByCategoryContains("대중음악", pageable);
@@ -155,7 +165,9 @@ public class ArtizenService {
 
             addArtizen(concertList, artizenList);
 
-            return ResponseEntity.ok(artizenList);
+            ArtizenListResponseDto concertListResponseDto = new ArtizenListResponseDto(artizenList, concertList.isLast());
+
+            return ResponseEntity.ok(concertListResponseDto);
 
         } else if (genre.contains("클래식/무용")) {
             Slice<Artizen> classicList = artizenRepository.findAllByCategoryContains("클래식", pageable);
@@ -166,7 +178,16 @@ public class ArtizenService {
             addArtizen(classicList, artizenList);
             addArtizen(dancingList, artizenList);
 
-            return ResponseEntity.ok(artizenList);
+            if (classicList.isLast() && dancingList.isLast()) {
+                ArtizenListResponseDto artizenListResponseDto = new ArtizenListResponseDto(artizenList, true);
+
+                return ResponseEntity.ok(artizenListResponseDto);
+
+            } else {
+                ArtizenListResponseDto artizenListResponseDto = new ArtizenListResponseDto(artizenList, false);
+
+                return ResponseEntity.ok(artizenListResponseDto);
+            }
 
         } else {
             Slice<Artizen> circusList = artizenRepository.findAllByCategoryContains("서커스/마술", pageable);
@@ -175,7 +196,9 @@ public class ArtizenService {
 
             addArtizen(circusList, artizenList);
 
-            return ResponseEntity.ok(artizenList);
+            ArtizenListResponseDto circusListResponseDto = new ArtizenListResponseDto(artizenList, circusList.isLast());
+
+            return ResponseEntity.ok(circusListResponseDto);
         }
     }
 
