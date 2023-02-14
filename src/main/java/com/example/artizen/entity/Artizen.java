@@ -40,8 +40,6 @@ public class Artizen extends TimeStamped {
     @Column(nullable = false)
     private String category;
 
-    private String tag;
-
     @Column(nullable = false)
     private String status;
 
