@@ -32,6 +32,7 @@ public class MypageResponseDto {
     private String createdAt;
 
     //마이티켓 관련 필드
+    private Long myTicketId;
     private String ticketImg;
     private Integer totalHeart;
 
@@ -57,6 +58,7 @@ public class MypageResponseDto {
     }
 
     public MypageResponseDto (Myticket myticket) {
+        this.myTicketId = myticket.getId();
         this.cultureName = myticket.getArtizen().getName();
         this.place = myticket.getArtizen().getPlace();
         this.date = myticket.getArtizen().getDate();
