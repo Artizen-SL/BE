@@ -23,6 +23,7 @@ public class MypageResponseDto {
     private String cultureName;
     private String place;
     private String date;
+    private String posterUrl;
 
     //커뮤니티 관련 필드
     private Long communityId;
@@ -32,6 +33,7 @@ public class MypageResponseDto {
     private String createdAt;
 
     //마이티켓 관련 필드
+    private Long myTicketId;
     private String ticketImg;
     private Integer totalHeart;
 
@@ -46,6 +48,7 @@ public class MypageResponseDto {
         this.cultureName = artizen.getName();
         this.place = artizen.getPlace();
         this.date = artizen.getDate();
+        this.posterUrl = artizen.getPosterUrl();
     }
 
     public MypageResponseDto (Community community) {
@@ -57,6 +60,7 @@ public class MypageResponseDto {
     }
 
     public MypageResponseDto (Myticket myticket) {
+        this.myTicketId = myticket.getId();
         this.cultureName = myticket.getArtizen().getName();
         this.place = myticket.getArtizen().getPlace();
         this.date = myticket.getArtizen().getDate();

@@ -14,6 +14,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping(value = "/user/kakao/callback")
+    public String  kakaoCallback() {
+        return "로그인이 진행되는 중입니다.";
+    }
+
     @GetMapping(value = "/members/kakaoLogin")
     public ResponseEntity<?> kakaoToken(@RequestParam String accessToken) throws JsonProcessingException {
         return memberService.kakaoLogin(accessToken);
