@@ -22,13 +22,9 @@ public interface ArtizenRepository extends JpaRepository<Artizen, String> {
 
     Slice<Artizen> findAllByPlaceContainsOrderByCreatedAt(String keyword, Pageable pageable);
 
-    List<Artizen> findAllByCategoryContains(String keyword);
-
     List<Artizen> findTop3ByOrderByCreatedAtDesc();
 
     List<Artizen> findTop4ByOrderByTotalHeartDesc();
-
-    List<Artizen> findByPlace(String place);
 
     List<Artizen> findByPlaceAndCategoryContains(String place, String category);
 
