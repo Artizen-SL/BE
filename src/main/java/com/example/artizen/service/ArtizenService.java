@@ -282,19 +282,14 @@ public class ArtizenService {
 
 
     @Transactional
-    public ResponseEntity<?> searchArtizen(String keyword) {
+    public ResponseEntity<?> searchArtizen(String keyword, int page, int size) {
 
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        Page<Artizen> artizenList1 = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
-//        Page<Artizen> artizenList2 = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword, pageable);
-//        Page<Artizen> artizenList3 = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
-//        Page<Artizen> artizenList4 = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
+        Pageable pageable = PageRequest.of(page, size);
 
-        List<Artizen> nameContainsList = artizenRepository.findAllByNameContains(keyword);
-        List<Artizen> categoryContainsList = artizenRepository.findAllByCategoryContains(keyword);
-        List<Artizen> placeContainsList = artizenRepository.findAllByPlaceContains(keyword);
-        List<Artizen> contentContainsList = artizenRepository.findAllByContentContains(keyword);
+        Slice<Artizen> nameContainsList = artizenRepository.findAllByNameContainsOrderByCreatedAt(keyword, pageable);
+        Slice<Artizen> categoryContainsList = artizenRepository.findAllByCategoryContainsOrderByCreatedAt(keyword, pageable);
+        Slice<Artizen> placeContainsList = artizenRepository.findAllByPlaceContainsOrderByCreatedAt(keyword, pageable);
+        Slice<Artizen> contentContainsList = artizenRepository.findAllByContentContainsOrderByCreatedAt(keyword, pageable);
 
         List<ArtizenResponseDto> artizenList = new ArrayList<>();
 
@@ -303,7 +298,18 @@ public class ArtizenService {
         addElements(placeContainsList, artizenList);
         addElements(contentContainsList, artizenList);
 
-        return ResponseEntity.ok(artizenList);
+        Boolean isLast = false;
+
+        if(nameContainsList.isLast() &&
+        categoryContainsList.isLast() &&
+        placeContainsList.isLast() &&
+        contentContainsList.isLast()) {
+            isLast = true;
+        } else isLast = false;
+
+        ArtizenListResponseDto artizenListResponseDto = new ArtizenListResponseDto(artizenList, isLast);
+
+        return ResponseEntity.ok(artizenListResponseDto);
     }
 
 
@@ -326,7 +332,7 @@ public class ArtizenService {
     }
 
 
-    public void addElements(List<Artizen> list, List<ArtizenResponseDto> dtoList) {
+    public void addElements(Slice<Artizen> list, List<ArtizenResponseDto> dtoList) {
         for (Artizen artizen : list) {
             dtoList.add(new ArtizenResponseDto(artizen));
         }

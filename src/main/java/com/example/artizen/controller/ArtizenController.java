@@ -24,22 +24,14 @@ public class ArtizenController {
         return artizenService.searchKopis(startDate, endDate, page, rows, prfState);
     }
 
-
     // 메인페이지 검색할 Api(무한스크롤)
-//    @GetMapping(value = "/search/artizens")
-//    public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
-//                                           @RequestParam int page,
-//                                           @RequestParam int size){
-//
-//        return artizenService.searchArtizen(keyword, page, size);
-//    }
-
     @GetMapping(value = "/search/artizens")
-    public ResponseEntity<?> searchArtizen(@RequestParam String keyword){
+    public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
+                                           @RequestParam int page,
+                                           @RequestParam int size){
 
-        return artizenService.searchArtizen(keyword);
+        return artizenService.searchArtizen(keyword, page, size);
     }
-
 
     // 장르별 전체리스트 조회
     @GetMapping(value = "/artizens")
@@ -49,7 +41,6 @@ public class ArtizenController {
 
         return artizenService.getArtizenList(genre, page, size);
     }
-
 
     // 상세 조회
     @GetMapping(value = "/artizens/{artizen_id}")
