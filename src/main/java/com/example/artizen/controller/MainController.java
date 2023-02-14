@@ -15,8 +15,8 @@ public class MainController {
 
     //Artizen suggestion
     @GetMapping(value = "/suggest")
-    public ResponseEntity<?> getLocation (@RequestParam double latitude,
-                                          @RequestParam double longitude) {
+    public ResponseEntity<?> getLocation (@RequestParam String latitude,
+                                          @RequestParam String longitude) {
         return mainService.getLocation (latitude, longitude);
     }
 
