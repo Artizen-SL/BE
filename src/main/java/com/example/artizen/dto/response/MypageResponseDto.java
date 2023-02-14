@@ -23,6 +23,7 @@ public class MypageResponseDto {
     private String cultureName;
     private String place;
     private String date;
+    private String posterUrl;
 
     //커뮤니티 관련 필드
     private Long communityId;
@@ -47,6 +48,7 @@ public class MypageResponseDto {
         this.cultureName = artizen.getName();
         this.place = artizen.getPlace();
         this.date = artizen.getDate();
+        this.posterUrl = artizen.getPosterUrl();
     }
 
     public MypageResponseDto (Community community) {
