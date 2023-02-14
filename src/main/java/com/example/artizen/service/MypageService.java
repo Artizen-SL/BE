@@ -1,6 +1,7 @@
 package com.example.artizen.service;
 
 import com.example.artizen.dto.request.MypageRequestDto;
+import com.example.artizen.dto.response.MypageListResponseDto;
 import com.example.artizen.dto.response.MypageResponseDto;
 import com.example.artizen.entity.*;
 import com.example.artizen.repository.*;
@@ -61,8 +62,9 @@ public class MypageService {
 
             myHearts.add(new MypageResponseDto(heartContent));
         }
+        MypageListResponseDto myHeartsList = new MypageListResponseDto(myHearts, hearts.isLast());
 
-        return new ResponseEntity<>(myHearts, HttpStatus.OK);
+        return new ResponseEntity<>(myHeartsList, HttpStatus.OK);
     }
 
     public ResponseEntity<?> getCommunity(Member member, int page, int size) {
@@ -77,8 +79,9 @@ public class MypageService {
         for (Community communityList : communities) {
             myCommunities.add(new MypageResponseDto(communityList));
         }
+        MypageListResponseDto myCommunitesList = new MypageListResponseDto(myCommunities, communities.isLast());
 
-        return new ResponseEntity<>(myCommunities, HttpStatus.OK);
+        return new ResponseEntity<>(myCommunitesList, HttpStatus.OK);
     }
 
     public ResponseEntity<?> writeMyticket(Member member, MypageRequestDto mypageRequestDto) throws IOException {
@@ -112,8 +115,9 @@ public class MypageService {
         for (Myticket myTicket : myTickets) {
             myTicketList.add(new MypageResponseDto(myTicket));
         }
+        MypageListResponseDto myTicketsList = new MypageListResponseDto(myTicketList, myTickets.isLast());
 
-        return new ResponseEntity<>(myTicketList, HttpStatus.OK);
+        return new ResponseEntity<>(myTicketsList, HttpStatus.OK);
     }
 
 
