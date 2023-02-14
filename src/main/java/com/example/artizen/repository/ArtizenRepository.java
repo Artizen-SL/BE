@@ -12,13 +12,6 @@ public interface ArtizenRepository extends JpaRepository<Artizen, String> {
 
     Slice<Artizen> findAllByCategoryContains(String genre, Pageable pageable);
 
-//    Page<Artizen> findAllByNameContainsOrderByCreatedAt(String keyword, Pageable pageable);
-//
-//    Page<Artizen> findAllByCategoryContainsOrderByCreatedAt(String keyword, Pageable pageable);
-//
-//    Page<Artizen> findAllByContentContainsOrderByCreatedAt(String keyword, Pageable pageable);
-//
-//    Page<Artizen> findAllByPlaceContainsOrderByCreatedAt(String keyword, Pageable pageable);
     List<Artizen> findAllByCategoryContains(String keyword);
 
     List<Artizen> findAllByNameContains(String keyword);
@@ -30,5 +23,7 @@ public interface ArtizenRepository extends JpaRepository<Artizen, String> {
     List<Artizen> findTop3ByOrderByCreatedAtDesc();
 
     List<Artizen> findTop4ByOrderByTotalHeartDesc();
+
+    List<Artizen> findByPlaceAndCategoryContains(String place, String category);
 
 }

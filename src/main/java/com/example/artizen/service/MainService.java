@@ -25,8 +25,13 @@ public class MainService {
         String placeName = findShortDist(artizenTheaters, artizenMusicals, latitude, longitude);
 
         List<Artizen> suggestion = new ArrayList<>();
-        suggestion.add(findSuggestion(placeName, "연극"));
-        suggestion.add(findSuggestion(placeName, "뮤지컬"));
+        if (findSuggestion(placeName, "연극") != null) {
+            suggestion.add(findSuggestion(placeName, "연극"));
+        }
+
+        if (findSuggestion(placeName, "뮤지컬") != null) {
+            suggestion.add(findSuggestion(placeName, "뮤지컬"));
+        }
 
         Collections.sort(suggestion, new artizenComparator());
 
@@ -39,7 +44,9 @@ public class MainService {
         String placeName2 = findShortDist(artizenConcert, latitude, longitude);
 
         List<Artizen> suggestion2 = new ArrayList<>();
-        suggestion.add(findSuggestion(placeName2, "대중음악"));
+        if (findSuggestion(placeName2, "대중음악") != null) {
+            suggestion2.add(findSuggestion(placeName2, "대중음악"));
+        }
 
         Collections.sort(suggestion2, new artizenComparator());
 
@@ -52,8 +59,13 @@ public class MainService {
         String placeName3 = findShortDist(artizenClassic, artizenDancing, latitude, longitude);
 
         List<Artizen> suggestion3 = new ArrayList<>();
-        suggestion.add(findSuggestion(placeName3, "클래식"));
-        suggestion.add(findSuggestion(placeName3, "무용"));
+        if (findSuggestion(placeName3, "클래식") != null) {
+            suggestion3.add(findSuggestion(placeName3, "클래식"));
+        }
+
+        if (findSuggestion(placeName3, "무용") != null) {
+            suggestion3.add(findSuggestion(placeName3, "무용"));
+        }
 
         Collections.sort(suggestion3, new artizenComparator());
 
@@ -65,7 +77,9 @@ public class MainService {
         String placeName4 = findShortDist(artizenCircus, latitude, longitude);
 
         List<Artizen> suggestion4 = new ArrayList<>();
-        suggestion.add(findSuggestion(placeName4, "서커스/마술"));
+        if (findSuggestion(placeName4, "서커스/마술") != null) {
+            suggestion4.add(findSuggestion(placeName4, "서커스/마술"));
+        }
 
         Collections.sort(suggestion4, new artizenComparator());
 
@@ -180,10 +194,8 @@ public class MainService {
 
         Collections.sort(suggestion, new artizenComparator());
 
-//        if (suggestion.isEmpty()) {
-//            return findShortDist();
-//        }
-        return suggestion.get(0);
+        if (suggestion.isEmpty()){
+            return null;
+        } else return suggestion.get(0);
     }
-
 }
