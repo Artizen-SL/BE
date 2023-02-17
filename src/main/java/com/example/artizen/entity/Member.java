@@ -15,26 +15,48 @@ public class Member extends TimeStamped {
     @Id
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
+
+    @Column(nullable = false)
+    private String subId;
 
     private String profileImgUrl;
 
     @Column(nullable = false)
-    private String gender;
+    private String password;
 
     @Column(nullable = false)
-    private String age_range;
-
-    private String location;
+    private MemberGenderEnum gender;
 
     @Column(nullable = false)
-    private String authority;
+    private String ageRange;
+
+    @Column(nullable = false)
+    private String birthday;
+
+    @Column(nullable = false)
+    private MemberRoleEnum authority;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Heart> heartList;
+    private List<ArtizenHeart> artizenHeartList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<CommunityHeart> communityHeartList;
+
+    public Member(String kakaoId, String nickname, String encodedPassword, MemberRoleEnum role, MemberGenderEnum gender, String ageRange, String profileImgUrl, String birthday, String subId) {
+        this.id = kakaoId;
+        this.nickname = nickname;
+        this.subId = subId;
+        this.password = encodedPassword;
+        this.authority = role;
+        this.gender = gender;
+        this.ageRange = ageRange;
+        this.profileImgUrl = profileImgUrl;
+        this.birthday = birthday;
+    }
 
 }
