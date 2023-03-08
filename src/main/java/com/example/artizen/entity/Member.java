@@ -59,4 +59,8 @@ public class Member extends TimeStamped {
         this.birthday = birthday;
     }
 
+    public void updateAuth (MemberRoleEnum role) {
+        this.authority = role;
+    }
+
 }

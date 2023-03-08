@@ -20,9 +20,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,7 +46,10 @@ public class MemberService {
     private String redirectUri;
 
     //카카오 로그인
-    public ResponseEntity<?> kakaoLogin(String accessToken) throws JsonProcessingException {
+    public ResponseEntity<?> kakaoLogin(String code) throws JsonProcessingException {
+        //"인가 코드"로 "엑세스 토큰" 요청
+        String accessToken = getAccessToken(code);
+
         //"액세스 토큰"으로 "카카오 사용자 정보" 가져오기
         KakaoMemberInfoDto kakaoMemberInfoDto = getKakaoMemberInfo(accessToken);
 
@@ -64,6 +70,39 @@ public class MemberService {
         forceLogin(kakaoMember);
 
         return new ResponseEntity<>("로그인 완료", httpHeaders, HttpStatus.OK);
+    }
+
+    //액세스 토큰 요청
+    private String getAccessToken(String code) throws JsonProcessingException {
+        // HTTP Header 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        // HTTP Body 생성
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", kakaoAPI);
+        body.add("redirect_uri", redirectUri);
+        body.add("code", code);
+
+        // HTTP 요청 보내기
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
+                new HttpEntity<>(body, headers);
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST,
+                kakaoTokenRequest,
+                String.class
+        );
+
+        // HTTP 응답 (JSON) -> 액세스 토큰 파싱
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        String accessToken = jsonNode.get("access_token").asText();
+
+        return accessToken;
     }
 
     //토큰으로 카카오 API 호출
@@ -199,4 +238,53 @@ public class MemberService {
 
         return new ResponseEntity<> (response.getBody(), HttpStatus.OK);
     }
+
+    public ResponseEntity<?> getAdmin(String id, String adminToken) {
+        Optional<Member> member = memberRepository.findById(id);
+
+        if (member.isEmpty()) {
+            return new ResponseEntity<>("해당 유저가 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        if (Objects.equals(ADMIN_TOKEN, adminToken)) {
+            member.get().updateAuth(MemberRoleEnum.ADMIN);
+            memberRepository.save(member.get());
+
+        } else {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("관리자 설정 완료", HttpStatus.OK);
+    }
+
+    //기본 회원가입
+//    public ResponseEntity<?> signup(SignupRequestDto signupRequestDto) {
+//
+//        // 회원 ID 중복 확인
+//        String nickname = signupRequestDto.getNickname();
+//        Optional<Member> found = memberRepository.findByNickname(nickname);
+//        if (found.isPresent()) {
+//            throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
+//        }
+//
+//        // 패스워드 암호화
+//        String password = passwordEncoder.encode(signupRequestDto.getPassword());
+//
+//        // 사용자 ROLE 확인
+//        MemberRoleEnum role = MemberRoleEnum.USER;
+//        if (signupRequestDto.isAdmin()) {
+//            if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+//                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+//            }
+//            role = MemberRoleEnum.ADMIN;
+//        }
+//
+//        //일반 회원 Id 확인
+//        String id = signupRequestDto.getId();
+//
+//        Member member = new Member(nickname, password, role, id, gender, ageRange, profileImgUrl, location);
+//        memberRepository.save(member);
+//
+//        return new ResponseEntity<> ("회원가입 완료", HttpStatus.OK);
+//    }
 }
