@@ -2,6 +2,7 @@ package com.example.artizen.controller;
 
 import com.example.artizen.security.MemberDetailsImpl;
 import com.example.artizen.service.HeartService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/hearts")
+@Api(tags = "Artizen heart (좋아요)")
 public class HeartController {
     private final HeartService heartService;
 

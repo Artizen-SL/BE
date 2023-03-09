@@ -3,6 +3,7 @@ package com.example.artizen.controller;
 import com.example.artizen.dto.request.CommunityRequestDto;
 import com.example.artizen.security.MemberDetailsImpl;
 import com.example.artizen.service.CommunityService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/community")
+@Api(tags = "Artizen community (커뮤니티)")
 public class CommunityController {
     private final CommunityService communityService;
 
