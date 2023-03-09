@@ -4,6 +4,7 @@ import com.example.artizen.dto.request.MypageRequestDto;
 import com.example.artizen.security.MemberDetailsImpl;
 import com.example.artizen.service.MypageService;
 import com.example.artizen.util.TimeStamped;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
+@Api(tags = "Artizen mypage (마이페이지)")
 public class MypageController extends TimeStamped {
 
     private final MypageService mypageService;

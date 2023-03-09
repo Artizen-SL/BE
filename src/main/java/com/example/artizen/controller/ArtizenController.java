@@ -1,6 +1,7 @@
 package com.example.artizen.controller;
 
 import com.example.artizen.service.ArtizenService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Api(tags = "Artizen detail (검색, 상세)")
 public class ArtizenController {
     private final ArtizenService artizenService;
 

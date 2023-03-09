@@ -3,6 +3,7 @@ package com.example.artizen.controller;
 import com.example.artizen.security.MemberDetailsImpl;
 import com.example.artizen.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/members")
+@Api(tags = "Artizen longin/logout (로그인/로그아웃)")
 public class MemberController {
 
     private final MemberService memberService;

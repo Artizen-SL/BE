@@ -3,6 +3,7 @@ package com.example.artizen.controller;
 import com.example.artizen.dto.request.NotificationRequestDto;
 import com.example.artizen.security.MemberDetailsImpl;
 import com.example.artizen.service.NotificationService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/notification")
+@Api(tags = "Artizen notification (공지)")
 public class NotificationController {
     private final NotificationService notificationService;
 
