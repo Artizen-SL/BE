@@ -16,23 +16,20 @@ public class MainController {
 
     private final MainService mainService;
 
-    //Artizen suggestion
-    @Operation(summary = "Artizen suggestion", description = "아티즌 추천 문화컨텐츠")
+    @Operation(summary = "Artizen suggestion", description = "아티즌 문화컨텐츠 카테고리별 추천 기능")
     @GetMapping(value = "/suggest")
     public ResponseEntity<?> getLocation (@RequestParam String latitude,
                                           @RequestParam String longitude) {
         return mainService.getLocation (latitude, longitude);
     }
 
-    //Best Artizen url Get.
-    @Operation(summary = "Best Artizen", description = "아티즌 인기 문화컨텐츠")
+    @Operation(summary = "Best Artizen", description = "아티즌 인기 문화컨텐츠 TOP 4 추천 기능")
     @GetMapping(value = "/best")
     public ResponseEntity<?> getBestArtizen() {
         return mainService.getBestArtizen();
     }
 
-    //new Artizen url Get.
-    @Operation(summary = "New Artizen", description = "아티즌 신규 문화컨텐츠")
+    @Operation(summary = "New Artizen", description = "아티즌 신규 문화컨텐츠 TOP 3 추천 기능")
     @GetMapping(value = "/new")
     public ResponseEntity<?> getNewArtizen() {
         return mainService.getNewArtizen();
