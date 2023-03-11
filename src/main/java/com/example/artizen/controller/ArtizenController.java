@@ -2,6 +2,7 @@ package com.example.artizen.controller;
 
 import com.example.artizen.service.ArtizenService;
 import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArtizenController {
     private final ArtizenService artizenService;
 
-    // kopis 에서 받아오는 경로
+    @Operation(summary = "Kopis update", description = "Kopis 데이터 업데이트하는 기능")
     @GetMapping(value = "/search/kopis")
     public ResponseEntity<?> searchKopis(@RequestParam int startDate,
                                         @RequestParam int endDate,
@@ -26,7 +27,7 @@ public class ArtizenController {
         return artizenService.searchKopis(startDate, endDate, page, rows, prfState);
     }
 
-    // 메인페이지 검색할 Api(무한스크롤)
+    @Operation(summary = "아티즌 통합 검색", description = "메인페이지 통합 검색창 기능")
     @GetMapping(value = "/search/artizens")
     public ResponseEntity<?> searchArtzien(@RequestParam String keyword,
                                            @RequestParam int page,
@@ -35,7 +36,7 @@ public class ArtizenController {
         return artizenService.searchArtizen(keyword, page, size);
     }
 
-    // 장르별 전체리스트 조회
+    @Operation(summary = "장르별 리스트 조회", description = "각 카테고리별 전체 리스트 조회 기능")
     @GetMapping(value = "/artizens")
     public ResponseEntity<?> getArtizenList(@RequestParam String genre,
                                             @RequestParam int page,
@@ -44,7 +45,7 @@ public class ArtizenController {
         return artizenService.getArtizenList(genre, page, size);
     }
 
-    // 상세 조회
+    @Operation(summary = "아티즌 상세 조회", description = "각 문화컨텐츠별 상세 조회 기성")
     @GetMapping(value = "/artizens/{artizen_id}")
     public ResponseEntity<?> getArtizen(@PathVariable(name = "artizen_id") String id) {
 
