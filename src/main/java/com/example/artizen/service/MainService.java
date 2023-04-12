@@ -36,7 +36,9 @@ public class MainService {
         Collections.sort(suggestion, new artizenComparator());
 
         List<MainResponseDto> mainResponseDtoList = new ArrayList<>();
-        mainResponseDtoList.add(new MainResponseDto(suggestion.get(0)));
+        if (!suggestion.isEmpty()) {
+            mainResponseDtoList.add(new MainResponseDto(suggestion.get(0)));
+        }
 
         //콘서트 추천
         List<Artizen> artizenConcert = artizenRepository.findAllByCategoryContains("대중음악");
@@ -50,7 +52,9 @@ public class MainService {
 
         Collections.sort(suggestion2, new artizenComparator());
 
-        mainResponseDtoList.add(new MainResponseDto(suggestion2.get(0)));
+        if (!suggestion2.isEmpty()) {
+            mainResponseDtoList.add(new MainResponseDto(suggestion2.get(0)));
+        }
 
         //클래식/무용 추천
         List<Artizen> artizenClassic = artizenRepository.findAllByCategoryContains("클래식");
@@ -69,7 +73,9 @@ public class MainService {
 
         Collections.sort(suggestion3, new artizenComparator());
 
-        mainResponseDtoList.add(new MainResponseDto(suggestion3.get(0)));
+        if (!suggestion3.isEmpty()) {
+            mainResponseDtoList.add(new MainResponseDto(suggestion3.get(0)));
+        }
 
         //마술/서커스 추천
         List<Artizen> artizenCircus = artizenRepository.findAllByCategoryContains("서커스/마술");
@@ -83,7 +89,9 @@ public class MainService {
 
         Collections.sort(suggestion4, new artizenComparator());
 
-        mainResponseDtoList.add(new MainResponseDto(suggestion4.get(0)));
+        if (!suggestion4.isEmpty()) {
+            mainResponseDtoList.add(new MainResponseDto(suggestion4.get(0)));
+        }
 
         return new ResponseEntity<>(mainResponseDtoList, HttpStatus.OK);
     }
