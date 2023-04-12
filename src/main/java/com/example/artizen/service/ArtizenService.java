@@ -40,9 +40,7 @@ public class ArtizenService {
 
         try {
 
-            String realState = convertState(prfState);
-
-            String url = "https://www.kopis.or.kr/openApi/restful/pblprfr?service=" + key + "&stdate=" + stDate + "&eddate=" + edDate + "&cpage=" + page + "&rows=" + rows + "&prfstate=" + realState;
+            String url = "https://www.kopis.or.kr/openApi/restful/pblprfr?service=" + key + "&stdate=" + stDate + "&eddate=" + edDate + "&cpage=" + page + "&rows=" + rows + "&prfstate=" + prfState;
 
             RestTemplate restTemplate = new RestTemplate();
             String xmlResult = restTemplate.getForObject(url, String.class);
@@ -311,18 +309,6 @@ public class ArtizenService {
 
         return ResponseEntity.ok(artizenListResponseDto);
     }
-
-
-    public String convertState(int state) {
-        if (state == 1) {
-            return "01";
-        } else if (state == 2) {
-            return "02";
-        } else {
-            return "03";
-        }
-    }
-
 
     public void existArtizen(ArtizenResponseDto artizenResponseDto) {
         if (!artizenRepository.existsById(artizenResponseDto.getId())) {
