@@ -1,4 +1,4 @@
-![image](https://ifh.cc/g/d6ZQzm.jpg)
+![image](https://github.com/Artizen-SL/BE/assets/113872338/2502e117-f82a-42b8-8746-ba143c91344b)
 
 
 ## 👉🏻 프로젝트 소개
@@ -35,7 +35,7 @@
 
 ## ⚙️ 서비스 아키텍처
 
-![서비스아키텍쳐ver 1](https://ifh.cc/g/RSogsz.jpg)
+![서비스아키텍쳐ver 1](https://github.com/Artizen-SL/BE/assets/113872338/b14d1593-3a93-4b6e-a858-1341c68bf711)
 
 <br>
 
@@ -73,7 +73,6 @@
 <img  src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=S&logoColor=white"> 
 <img  src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white">
 <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">
-<img  src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white">
 
 <br>
 
